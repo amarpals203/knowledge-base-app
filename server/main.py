@@ -1,13 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.db import init_db
-from server.routes.lakebase.notes import router as notes_router
-from server.routes.lakebase.assistant import router as assistant_router
+from server.database import init_db
+from server.routers import notes, tags, timer, assistant
 
-init_db()
+app = FastAPI(title="Knowledge Base API")
 
-app = FastAPI(title="Knowledge Base Backend API")
-
+# Allow Netlify and Localhost origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,9 +14,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(notes_router, prefix="/api")
-app.include_router(assistant_router, prefix="/api")
+# Initialize Database tables
+init_db()
 
-@app.get("/api/health")
-def health_check():
-    return {"status": "ok", "message": "Backend is running successfully"}
+# Root health check endpoint
+@app.get("/")
+def read_root():
+    return {"status": "online", "message": "Knowledge Base API is live and operational"}
+
+# Include routers
+app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
+app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
+app.include_router(timer.router, prefix="/api/timer", tags=["timer"])
+app.include_router(assistant.router, prefix="/api/assistant", tags=["assistant"])
