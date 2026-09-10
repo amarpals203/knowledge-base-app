@@ -1,0 +1,17 @@
+bundle:
+  name: lakebase-app
+
+sync:
+  include:
+    - server/**
+    - client/dist/**
+
+apps:
+  - name: lakebase-kb-app
+    command:
+      - "uvicorn"
+      - "server.main:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
