@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.database import init_db
-from server.routers import notes, tags, timer, assistant
+from server.routes.lakebase import notes, assistant
 
 app = FastAPI(title="Knowledge Base API")
 
@@ -14,16 +13,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Database tables
-init_db()
-
 # Root health check endpoint
 @app.get("/")
 def read_root():
     return {"status": "online", "message": "Knowledge Base API is live and operational"}
 
-# Include routers
+# Mount the real route handlers
 app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
-app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
-app.include_router(timer.router, prefix="/api/timer", tags=["timer"])
 app.include_router(assistant.router, prefix="/api/assistant", tags=["assistant"])
+
+# If lakebase todos router exists, include it as well
+try:
+    from server.routes.lakebase import todos
+    app.include_router(todos.router, prefix="/api/lakebase/todos", tags=["todos"])
+except (ImportError, AttributeError):
+    pass
