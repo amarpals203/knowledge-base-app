@@ -29,7 +29,7 @@ export default function App() {
         ...(selectedTag !== "All tags" && { tag: selectedTag }),
         ...(selectedPriority !== "All priorities" && { priority: selectedPriority }),
       });
-      const res = await fetch(`/api/notes/?${params}`);
+      const res = await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/?${params}`);
       if (!res.ok) throw new Error("Server error fetching notes");
       const data = await res.json();
       setNotes(data);
@@ -40,7 +40,7 @@ export default function App() {
 
   const fetchTags = async () => {
     try {
-      const res = await fetch("/api/notes/tags/list");
+      const res = await fetch("https://knowledge-base-app-j7a2.onrender.com/api/notes/tags/list");
       if (res.ok) {
         const data = await res.json();
         setTagsList(data);
@@ -75,7 +75,7 @@ export default function App() {
   const handleToggleTimer = async (note) => {
     if (activeTimerId === note.id) {
       setActiveTimerId(null);
-      await fetch(`/api/notes/${note.id}`, {
+      await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/${note.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ time_spent_seconds: note.time_spent_seconds }),
@@ -93,7 +93,7 @@ export default function App() {
       .filter(Boolean);
 
     try {
-      const res = await fetch("/api/notes/", {
+      const res = await fetch("https://knowledge-base-app-j7a2.onrender.com/api/notes/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,7 +117,7 @@ export default function App() {
   const handleCreateStandaloneTag = async () => {
     if (!standaloneTagName.trim()) return;
     try {
-      const res = await fetch("/api/notes/tags", {
+      const res = await fetch("https://knowledge-base-app-j7a2.onrender.com/api/notes/tags", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: standaloneTagName }),
@@ -134,7 +134,7 @@ export default function App() {
   const handleDeleteTag = async (e, tagName) => {
     e.stopPropagation();
     try {
-      await fetch(`/api/notes/tags/${encodeURIComponent(tagName)}`, { method: "DELETE" });
+      await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/tags/${encodeURIComponent(tagName)}`, { method: "DELETE" });
       if (selectedTag === tagName) setSelectedTag("All tags");
       fetchTags();
       fetchNotes();
@@ -145,7 +145,7 @@ export default function App() {
 
   const handleSaveEdit = async (id) => {
     if (!editTitle.trim()) return;
-    await fetch(`/api/notes/${id}`, {
+    await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: editTitle }),
@@ -155,7 +155,7 @@ export default function App() {
   };
 
   const handleToggleArchive = async (note) => {
-    await fetch(`/api/notes/${note.id}`, {
+    await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/${note.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ archived: !note.archived }),
@@ -165,7 +165,7 @@ export default function App() {
 
   const handleDeleteNote = async (id) => {
     if (activeTimerId === id) setActiveTimerId(null);
-    await fetch(`/api/notes/${id}`, { method: "DELETE" });
+    await fetch(`https://knowledge-base-app-j7a2.onrender.com/api/notes/${id}`, { method: "DELETE" });
     fetchNotes();
     fetchTags();
   };
@@ -178,7 +178,7 @@ export default function App() {
     setIsSearching(true);
 
     try {
-      const res = await fetch("/api/assistant/chat", {
+      const res = await fetch("https://knowledge-base-app-j7a2.onrender.com/api/assistant/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: userText }),
