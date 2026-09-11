@@ -19,5 +19,6 @@ init_db()
 def read_root():
     return {"status": "online", "message": "Knowledge Base API is live and operational"}
 
-app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
-app.include_router(assistant.router, prefix="/api/assistant", tags=["assistant"])
+# Include routers with /api prefix only (routers already define /notes and /assistant)
+app.include_router(notes.router, prefix="/api")
+app.include_router(assistant.router, prefix="/api")
